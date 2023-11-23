@@ -1,0 +1,21 @@
+{% extends 'items/base.html' %}
+
+{% block content %}
+{% for object in object_list %}
+<div class="card mb-4 box-shadow">
+    <div class="card-header">
+        <h4 class="my-0 font-weight-normal"><a href="{% url 'items:item_detail' pk=object.pk %}">{{ object.name }}</a></h4>
+    </div>
+    <div class="card-body">
+        {% if object.currency == 'RUB' %}
+        <h5 class="card-title pricing-card-title">{{ object.price }} ₽</h5>
+        {% elif object.currency == 'USD' %}
+        <h5 class="card-title pricing-card-title">${{ object.price }}</h5>
+        {% endif %}
+
+
+        <button type="button" class="btn btn-lg btn-block btn-outline-primary">Buy</button>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
