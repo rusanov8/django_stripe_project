@@ -10,16 +10,22 @@
                 </div>
                 <div class="card-body">
                     {% if object.currency == 'RUB' %}
-                    <h5 class="card-title pricing-card-title">{{ object.price }} ₽</h5>
+                        <h5 class="card-title pricing-card-title">{{ object.price }} ₽</h5>
                     {% elif object.currency == 'USD' %}
-                    <h5 class="card-title pricing-card-title">${{ object.price }}</h5>
+                        <h5 class="card-title pricing-card-title">${{ object.price }}</h5>
                     {% endif %}
 
                     <p>{{ object.description }}</p>
 
-                    <button type="button" class="btn btn-lg btn-block btn-outline-primary" id="buyButton">Buy</button>
+                    <form action="{% url 'items:add_to_order' pk=object.pk %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-primary mb-2">Добавить в заказ</button>
+                    </form>
+
+                    <a href="{% url 'items:make_product_payment' pk=object.pk %}" class="btn btn-sm btn-outline-success mb-2">Купить</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'items/base.html' %}
+
+{% block content %}
+<div class="container">
+  {% if not order %}
+    <p>Ваш заказ пуст</p>
+  {% else %}
+    <h1>Your Order</h1>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Total Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order_item in order.order_items.all %}
+          <tr>
+            <td>{{ order_item.item.name }}</td>
+            <td>{{ order_item.quantity }}</td>
+            {% if order_item.item.currency == 'USD' %}
+              <td>$ {{ order_item.item.price }}</td>
+              <td>$ {{ order_item.get_total_price }}</td>
+            {% else %}
+              <td>₽ {{ order_item.item.price }}</td>
+              <td>₽ {{ order_item.get_total_price }}</td>
+            {% endif %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <p><strong>Total Amount:</strong> ₽ {{ order.total_amount }}</p>
+    <p><small><strong>P.S.</strong> При условии добавления в заказ товаров с разной валютой, общая стоимость заказа будет
+        рассчитана в рублях. Спасибо за понимание!</small></p>
+
+    <div class="container">
+      <a href="{% url 'items:make_order_payment' order_pk=order.pk %}" class="btn btn-primary mr-2">Оплатить заказ</a>
+      <a href="{% url 'items:delete_order' order_pk=order.pk %}" class="btn btn-danger">Удалить</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
