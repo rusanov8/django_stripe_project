@@ -1,8 +1,10 @@
 from django.db import models
 
 
-# Create your models here.
 class Item(models.Model):
+    """
+       Модель для представления товара.
+    """
 
     CURRENCY_CHOICES = (
         ('RUB', 'RUB'),
@@ -24,4 +26,31 @@ class Item(models.Model):
         db_table = 'items'
 
 
+class Order(models.Model):
+    """
+        Модель для представления заказа.
+    """
 
+    items = models.ManyToManyField(Item, verbose_name='Товары')
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Общая стоимость')
+
+    class Meta:
+        verbose_name = 'Заказ'
+        verbose_name_plural = 'Заказы'
+        db_table = 'orders'
+
+
+class OrderItem(models.Model):
+    """
+        Модель для представления позиции товара в заказе.
+    """
+
+    order = models.ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE, verbose_name='Заказ')
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, verbose_name='Товар')
+    quantity = models.PositiveIntegerField(default=1, verbose_name='Количество товаров')
+
+    def get_total_price(self):
+        return self.item.price * self.quantity
+
+    class Meta:
+        db_table = 'order_item'
